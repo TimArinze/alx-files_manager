@@ -10,28 +10,29 @@ class RedisClient {
   }
 
   isAlive() {
-	if (this.client.connected) {
-		return true;
-	} else {
-		return false;
-	}
+    if (this.client.connected) {
+      return true;
+    }
+    return false;
   }
+
   async get(key) {
-	return new Promise((resolve, reject) => {
-		this.client.get(key, (err, value) => {
-			if (err) reject(err);
-			resolve(value);
-		})
-	})
+    return new Promise((resolve, reject) => {
+      this.client.get(key, (err, value) => {
+        if (err) reject(err);
+        resolve(value);
+      });
+    });
   }
 
   async set(key, value, duration) {
-	return new Promise((resolve, reject) => {
-		this.client.setex(key, duration, value, (err) => {
-			if (err) reject(err);
-			resolve();
-		})
-  })}
+    return new Promise((resolve, reject) => {
+      this.client.setex(key, duration, value, (err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
 }
 
 const redisClient = new RedisClient();
