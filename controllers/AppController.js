@@ -6,11 +6,10 @@ class AppController {
     const redis = await redisClient.isAlive();
     const db = await dbClient.isAlive();
     const status = {
-      redis: `${redis}`,
-      db: `${db}`,
+        redis,
+        db,
     };
-    res.json(status);
-    res.status(200);
+    return res.json(status).status(200);
   }
 
   static async getStats(req, res) {
