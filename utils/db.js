@@ -1,65 +1,38 @@
-const { MongoClient } = require('mongodb')
+const MongoClient = require('mongodb').MongoClient;
  
 class DBClient {
     constructor() {
-        if (process.env.DB_HOST) {
-            this.host = DB_HOST
-        } else {
-            this.host = 'localhost'
-        }
-        if (process.env.DB_PORT) {
-            this.port = DB_PORT
-        } else {
-            this.port = 27017
-        }
-        if (process.env.DB_DATABASE) {
-            this.database = DB_DATABASE
-        } else {
-            this.database = 'files_manager'
-        }
-        this.client = MongoClient(`mongodb://${this.host}:${this.port}/${this.database}`, { useUnifiedTopology: true })
-        }
+        this.host = (process.env.DB_HOST) ? process.env.DB_HOST: "localhost"
+        this.port = (process.env.DB_PORT) ? process.env.DB_PORT: 27017
+        this.database = (process.env.DB_DATABASE) ? process.env.DB_DATABASE: "files_manager"
+        this.url = `mongodb://${this.host}:${this.port}`
+        this.connected = false
+        this.client = new MongoClient(this.url, { useNewUrlParser: true, useUnifiedTopology: true })
+        this.client.connect().then(() => {
+            this.connected = true;
+        }).catch((err) => console.log(err.message))
+    }
 
-        isAlive() {
-            this.client.connect()
-            .then(() => {
-                return true
-            })
-            .catch(() => {
-                return false
-            })
-        }
+    isAlive() {
+        return this.connected
+    }
 
-        async nbUsers() {
-            try {
-                await this.client.connect()
-                const count = await this.client
-                    .db(this.database)
-                    .collection('users')
-                    .countDocuments()
-                return count
-            } catch (err) {
-                return console.log(err)
-            } finally {
-                await this.client.close()
-            }
-        }
+    async nbUsers() {
+        this.client.connect();
+        const db = this.client.db(this.database);
+        const collection = db.collection('users');
+        const count = await collection.countDocuments();
+        return count;
+    }
 
-        async nbFiles() {
-            try {
-                await this.client.connect()
-                const count = await this.client
-                    .db(this.database)
-                    .collection('files')
-                    .countDocuments()
-                return count
-            } catch (err) {
-                return console.log(err)
-            } finally {
-                await this.client.close()
-            }
-        }
+    async nbFiles() {
+        this.client.connect();
+        const db = this.client.db(this.database);
+        const collection = db.collection('files');
+        const count = await collection.countDocuments();
+        return count;
+    }
+
 }
-
 const dbClient = new DBClient()
 export default dbClient
