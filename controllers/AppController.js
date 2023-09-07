@@ -6,8 +6,8 @@ class AppController {
     const redis = await redisClient.isAlive();
     const db = await dbClient.isAlive();
     const status = {
-        redis,
-        db,
+      redis,
+      db,
     };
     return res.json(status).status(200);
   }
