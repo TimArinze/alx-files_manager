@@ -1,5 +1,5 @@
 class AuthController {
-    static async getConnect(req, res) {
-        
-    }
+  static async getConnect(req, res) {
+
+  }
 }
