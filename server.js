@@ -2,9 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const jsonParser = bodyParser.json();
+// const jsonParser = bodyParser.json();
 
-app.use(jsonParser);
+// app.use(jsonParser);
 
 // Require the routes defined in routes/index.js
 const routes = require('./routes/index');

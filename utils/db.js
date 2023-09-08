@@ -36,7 +36,6 @@ class DBClient {
     const db = this.client.db(this.database);
     const collection = db.collection('users');
     const emailExist = await collection.findOne({ email });
-    console.log(emailExist);
     if (emailExist) return true;
     return false;
   }
