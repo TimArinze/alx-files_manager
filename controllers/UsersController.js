@@ -10,14 +10,14 @@ class UsersController {
     if (!password) {
       return res.json({ error: 'Missing password' }).status(400);
     }
-    const emailcheck = await dbClient.findEmail(email);
-    console.log(emailcheck);
-    if (emailcheck === true) {
+    const emailCheck = await dbClient.client.db(dbClient.database).collection('users').findOne({ email });
+    if (emailCheck) {
       return res.json({ error: 'Already exist' }).status(400);
     }
     const hashpassword = sha(password);
-    const user = await dbClient.putNewUser({ email, password: hashpassword });
-    return res.json(user).status(201);
+    await dbClient.client.db(dbClient.database).collection('users').insertOne({ email, password: hashpassword });
+    const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ email });
+    return res.json({ email: user.email, id: user._id }).status(201);
   }
 }
 
