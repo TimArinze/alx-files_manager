@@ -11,6 +11,7 @@ class UsersController {
       return res.json({ error: 'Missing password' }).status(400);
     }
     const emailcheck = await dbClient.findEmail(email);
+    console.log(emailcheck);
     if (emailcheck === true) {
       return res.json({ error: 'Already exist' }).status(400);
     }
