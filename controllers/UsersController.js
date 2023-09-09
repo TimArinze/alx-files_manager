@@ -26,7 +26,7 @@ class UsersController {
     const token = req.get('X-Token');
     const key = `auth_${token}`;
     const userID = await redisClient.get(key);
-    if (!userID) {
+    if (!token || !userID) {
       return res.json({ error: 'Unauthorized' }).status(401);
     }
     const _id = new ObjectId(userID);

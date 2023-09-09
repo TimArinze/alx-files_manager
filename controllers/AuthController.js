@@ -21,7 +21,7 @@ class AuthController {
 
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ email });
 
-    if (user.password !== hashedPassword) {
+    if (!user || user.password !== hashedPassword) {
       return res.json({ error: 'Unauthorized' }).status(401);
     }
     // Generating random token
