@@ -12,6 +12,9 @@ class AuthController {
 
     // changing it to buffer of something like this
     // <Buffer 05 ab 22 71 89 bd 89 01 91 e5 b1 85 b8 b9 8d bd b4 e9 d1>
+    if (auth.split(' ')[0] !== 'Basic') {
+        return res.status(401)
+    }
     const authDecoded = Buffer.from(authBasicStripped, 'base64');
     const authToString = authDecoded.toString('utf-8');
     const [email, password] = authToString.split(':');
