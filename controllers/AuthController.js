@@ -7,11 +7,12 @@ class AuthController {
   static async getConnect(req, res) {
     const auth = req.get('Authorization');
 
-    if (!auth.startsWith('Basic ')) {
-      return res.status(401).json({ error: 'Unauthorized' });
-    }
     // to remove the Basic and just the encoded number
     const authBasicStripped = auth.split(' ')[1];
+
+    if (auth.split(' ')[0] !== Basic) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
     // changing it to buffer of something like this
     // <Buffer 05 ab 22 71 89 bd 89 01 91 e5 b1 85 b8 b9 8d bd b4 e9 d1>
     const authDecoded = Buffer.from(authBasicStripped, 'base64');
