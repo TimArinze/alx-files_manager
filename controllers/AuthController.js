@@ -6,6 +6,10 @@ import redisClient from '../utils/redis';
 class AuthController {
   static async getConnect(req, res) {
     const auth = req.get('Authorization');
+
+    if (!auth.startsWith('Basic ')) {
+      return res.json({ error: 'Unauthorized' }).status(401);
+    }
     // to remove the Basic and just the encoded number
     const authBasicStripped = auth.split(' ')[1];
     // changing it to buffer of something like this
