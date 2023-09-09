@@ -28,7 +28,7 @@ class RedisClient {
     });
   }
 
-  //duration in seconds
+  // duration in seconds
   async set(key, value, duration) {
     return new Promise((resolve, reject) => {
       this.client.set(key, value, 'EX', duration, (err) => {
