@@ -8,7 +8,7 @@ class AuthController {
     const auth = req.get('Authorization');
 
     if (!auth.startsWith('Basic ')) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     // to remove the Basic and just the encoded number
     const authBasicStripped = auth.split(' ')[1];
