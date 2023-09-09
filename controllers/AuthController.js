@@ -22,14 +22,14 @@ class AuthController {
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ email });
 
     if (!user || user.password !== hashedPassword) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     // Generating random token
     const authToken = uuidv4();
     // Storing in redis as key: auth_<token>
     const key = `auth_${authToken}`;
     await redisClient.set(`${key}`, `${user._id.toString()}`, 86400);
-    return res.json({ token: authToken }).status(200);
+    return res.status(200).json({ token: authToken });
   }
 
   static async getDisconnect(req, res) {
@@ -37,7 +37,7 @@ class AuthController {
     const key = `auth_${token}`;
     const userID = await redisClient.get(key);
     if (!userID) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.status(401).json({ error: 'Unauthorized' });
     }
     await redisClient.del(key);
     return res.status(204).json('');
