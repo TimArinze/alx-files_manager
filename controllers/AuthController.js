@@ -8,7 +8,7 @@ class AuthController {
     const auth = req.get('Authorization');
 
     if (!auth.startsWith('Basic ')) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.json({ 'error': 'Unauthorized' }).status(401);
     }
     // to remove the Basic and just the encoded number
     const authBasicStripped = auth.split(' ')[1];
@@ -22,14 +22,14 @@ class AuthController {
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ email });
 
     if (!user || user.password !== hashedPassword) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.json({ 'error': 'Unauthorized' }).status(401);
     }
     // Generating random token
     const authToken = uuidv4();
     // Storing in redis as key: auth_<token>
     const key = `auth_${authToken}`;
     await redisClient.set(`${key}`, `${user._id.toString()}`, 86400);
-    return res.json({ token: authToken }).status(200);
+    return res.json({ 'token': authToken }).status(200);
   }
 
   static async getDisconnect(req, res) {
@@ -37,7 +37,7 @@ class AuthController {
     const key = `auth_${token}`;
     const userID = await redisClient.get(key);
     if (!userID) {
-      return res.json({ error: 'Unauthorized' }).status(401);
+      return res.json({ 'error': 'Unauthorized' }).status(401);
     }
     await redisClient.del(key);
     return res.status(204).json('');
