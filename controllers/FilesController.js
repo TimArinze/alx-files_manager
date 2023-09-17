@@ -57,8 +57,6 @@ class FilesController {
         parentId,
         isPublic,
       });
-    }
-    if (type === 'folder') {
       const newFile = await dbClient.client.db(dbClient.database).collection('files').findOne({ name, userId: ObjectID(userID) });
       res.status(201);
       const newFileArranged = {
@@ -72,6 +70,7 @@ class FilesController {
       res.json(newFileArranged);
       return res;
     }
+
     const path = process.env.FOLDER_PATH || '/tmp/files_manager';
     if (!fs.existsSync(path)) {
       // Create the folder if it doesn't exist
