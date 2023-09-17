@@ -109,6 +109,49 @@ class FilesController {
     res.json(newFileArranged);
     return res;
   }
+
+  static async getShow(req, res) {
+    const { id } = req.params;
+
+    const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ _id: ObjectID(id) });
+    if (!user) {
+      res.status(401);
+      res.json({ error: 'Unauthorized' });
+      return res;
+    }
+    const file = await dbClient.client.db(dbClient.database).collection('files').findOne({ userId: ObjectID(id) });
+    if (!file) {
+      res.status(404);
+      res.json({ error: 'Not found' });
+      return res;
+    }
+    const fileArranged = {
+      id: file._id,
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    };
+    return fileArranged;
+  }
+
+  static async getIndex(req, res) {
+    const { token } = req.get('X-Token');
+    const userID = await redisClient.get(`auth_${token}`);
+    const user = await dbClient.client.db(dbClient.database).collection('user').findOne({ _id: ObjectID(userID) });
+    if (!user) {
+      res.status(401);
+      res.json({ error: 'Unauthorized' });
+      return res;
+    }
+    let { parentId } = req.params;
+    if (!parentId) {
+      parentId = 0;
+    }
+    const files = await dbClient.client.db(dbClient.database).collection('files').find({ parentId, userId: ObjectID(userID) });
+    return files;
+  }
 }
 
 module.exports = FilesController;
