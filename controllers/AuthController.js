@@ -7,7 +7,7 @@ class AuthController {
   static async getConnect(req, res) {
     const auth = req.get('Authorization');
 
-    // to remove the Basic and just the encoded number
+    // to remove the Basic and just take the encoded number
     const authBasicStripped = auth.split(' ')[1];
 
     // changing it to buffer of something like this
