@@ -115,7 +115,7 @@ class FilesController {
     const { id } = req.params;
     if (!token) {
       res.status(401);
-      res.json({ error: 'Unauthorized1'});
+      res.json({ error: 'Unauthorized'});
       return res;
     }
     const key = `auth_${token}`;
@@ -123,27 +123,26 @@ class FilesController {
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ _id: ObjectID(userID) });
     if (!user) {
       res.status(401);
-      res.json({ error: 'Unauthorized2' });
+      res.json({ error: 'Unauthorized' });
       return res;
     }
-    if (id) {
-      const file = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
-      if (!file) {
-        res.status(404);
-        res.json({ error: 'Not found' });
-        return res;
-      }
-      const fileArranged = {
-        id: file._id,
-        userId: file.userId,
-        name: file.name,
-        type: file.type,
-        isPublic: file.isPublic,
-        parentId: file.parentId,
-      };
-      res.status(200);
-      res.json(fileArranged);
+
+    const file = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
+    if (!file) {
+      res.status(404);
+      res.json({ error: 'Not found' });
+      return res;
     }
+    const fileArranged = {
+      id: file._id,
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    };
+    res.status(200);
+    res.json(fileArranged);
   }
 
   static async getIndex(req, res) {
