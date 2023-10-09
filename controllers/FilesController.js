@@ -115,7 +115,7 @@ class FilesController {
     const { id } = req.params;
     if (!token) {
       res.status(401);
-      res.json({ error: 'Unauthorized'});
+      res.json({ error: 'Unauthorized' });
       return res;
     }
     const key = `auth_${token}`;
@@ -143,6 +143,7 @@ class FilesController {
     };
     res.status(200);
     res.json(fileArranged);
+    return res;
   }
 
   static async getIndex(req, res) {
