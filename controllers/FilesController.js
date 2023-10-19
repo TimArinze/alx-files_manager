@@ -174,9 +174,9 @@ class FilesController {
     const perPage = 20;
     if (!page) {
       page = 1;
-    }    
+    }
     const files = await dbClient.client.db(dbClient.database).collection('files')
-      .find({ parentId: parentId, userId: ObjectID(userID)})
+      .find({ parentId, userId: ObjectID(userID) })
       .skip((page - 1) * perPage)
       .limit(perPage)
       .toArray();
@@ -194,6 +194,7 @@ class FilesController {
     });
     res.status(200);
     res.json(filesArranged);
+    return res;
   }
 }
 
