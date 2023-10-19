@@ -164,9 +164,14 @@ class FilesController {
       res.json({ error: 'Unauthorized' });
       return res;
     }
-    let { parentId, page } = req.params;
+    let { parentId } = req.query;
+    let { page } = req.query;
+    console.log(parentId);
+    console.log(page)
     if (!parentId) {
       parentId = 0;
+    } else {
+      parentId = parentId.toString();
     }
     const perPage = 20;
     if (!page) {
