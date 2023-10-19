@@ -167,7 +167,7 @@ class FilesController {
     let { parentId } = req.query;
     let { page } = req.query;
     console.log(parentId);
-    console.log(page)
+    console.log(page);
     if (!parentId) {
       parentId = 0;
     } else {
