@@ -151,7 +151,7 @@ class FilesController {
   }
 
   static async getIndex(req, res) {
-    const { token } = req.get('X-Token');
+    const token = req.get('X-Token');
     const userID = await redisClient.get(`auth_${token}`);
     const user = await dbClient.client.db(dbClient.database).collection('user').findOne({ _id: ObjectID(userID) });
     if (!user) {
@@ -159,12 +159,33 @@ class FilesController {
       res.json({ error: 'Unauthorized' });
       return res;
     }
-    let { parentId } = req.params;
+    let { parentId, page } = req.params;
     if (!parentId) {
       parentId = 0;
     }
-    const files = await dbClient.client.db(dbClient.database).collection('files').find({ parentId, userId: ObjectID(userID) });
-    return files;
+    const perPage = 20;
+    if (!page) {
+      page = 1;
+    }    
+    const files = await dbClient.client.db(dbClient.database).collection('files')
+      .find({ parentId: parentId, userId: ObjectID(userID)})
+      .skip((page - 1) * perPage)
+      .limit(perPage)
+      .toArray();
+
+    const filesArranged = [];
+    await files.forEach((file) => {
+      filesArranged.push({
+        id: file._id,
+        userId: file.userId,
+        name: file.name,
+        type: file.type,
+        isPublic: file.isPublic,
+        parentId: file.parentId,
+      });
+    });
+    res.status(200);
+    res.json(filesArranged);
   }
 }
 
