@@ -198,6 +198,73 @@ class FilesController {
     res.json(filesArranged);
     return res;
   }
+
+  static async putPublish(req, res) {
+    const token = req.get('X-token');
+    const { id } = req.params
+    if (!token) {
+      res.status(401);
+      res.json("Unauthorized")
+      return res
+    }
+    const userID = await redisClient.get(`auth_${token}`);
+    const user = await dbClient.client.db(dbClient.database).collection('users').findOne({_id: ObjectID(userID)});
+    if (!user) {
+      res.status(401);
+      res.json('Unauthorized')
+      return res
+    }
+    const collection = await dbClient.client.db(dbClient.database).collection('files');
+    const query = { _id: ObjectID(id), userId: ObjectID(userID)};
+    const update = { $set: {isPublic: true}};
+    const result = await collection.updateOne(query, update)
+    console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`)
+    const file = await dbClient.client.db(dbClient.database).collection('files').findOne({_id: ObjectID(id)});
+    const fileArranged = {
+      id: file._id,
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId,
+    };
+    res.status(200);
+    res.json(fileArranged)
+    return res
+  }
+  static async putUnpublish(req, res) {
+    const token = req.get('X-token');
+    const { id } = req.params
+    if (!token) {
+      res.status(401);
+      res.json('Unauthorized')
+      return res
+    }
+    const userID = await redisClient.get(`auth_${token}`);
+    const user = await dbClient.client.db(dbClient.database).collection('users').findOne({_id: ObjectID(userID)});
+    if (!user) {
+      res.status(401);
+      res.json('Unauthorized')
+      return res
+    }
+    const collection = await dbClient.client.db(dbClient.database).collection('files');
+    const query = { _id: ObjectID(id), userId: ObjectID(userID)}
+    const update = {$set: {isPublic: false}};
+    const result = await collection.updateOne(query, update)
+    console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`)
+    const file = await dbClient.client.db(dbClient.database).collection('files').findOne({_id: ObjectID(id)});
+    const fileArranged = {
+      id: file._id,
+      userId: file.userId,
+      name: file.name,
+      type: file.type,
+      isPublic: file.isPublic,
+      parentId: file.parentId
+    };
+    res.status(200);
+    res.json(fileArranged)
+    return res
+  }
 }
 
 module.exports = FilesController;
