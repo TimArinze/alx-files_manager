@@ -215,14 +215,14 @@ class FilesController {
       res.json('Unauthorized');
       return res;
     }
-    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
+    const collection = await dbClient.client.db(dbClient.database).collection('files');
+    const query = { _id: ObjectID(id), userId: ObjectID(userID) };
+    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne(query);
     if (!fileCheck) {
       res.status(404);
       res.json('Not found');
       return res;
     }
-    const collection = await dbClient.client.db(dbClient.database).collection('files');
-    const query = { _id: ObjectID(id), userId: ObjectID(userID) };
     const update = { $set: { isPublic: true } };
     const result = await collection.updateOne(query, update);
     console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`);
@@ -255,14 +255,14 @@ class FilesController {
       res.json('Unauthorized');
       return res;
     }
-    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
+    const collection = await dbClient.client.db(dbClient.database).collection('files');
+    const query = { _id: ObjectID(id), userId: ObjectID(userID) };
+    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne(query);
     if (!fileCheck) {
       res.status(404);
       res.json('Not found');
       return res;
     }
-    const collection = await dbClient.client.db(dbClient.database).collection('files');
-    const query = { _id: ObjectID(id), userId: ObjectID(userID) };
     const update = { $set: { isPublic: false } };
     const result = await collection.updateOne(query, update);
     console.log(`${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`);
