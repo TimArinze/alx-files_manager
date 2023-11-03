@@ -205,14 +205,14 @@ class FilesController {
     const { id } = req.params;
     if (!token) {
       res.status(401);
-      res.json('Unauthorized');
+      res.json({ error: 'Unauthorized' });
       return res;
     }
     const userID = await redisClient.get(`auth_${token}`);
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ _id: ObjectID(userID) });
     if (!user) {
       res.status(401);
-      res.json('Unauthorized');
+      res.json({ error: 'Unauthorized' });
       return res;
     }
     const collection = await dbClient.client.db(dbClient.database).collection('files');
@@ -220,7 +220,7 @@ class FilesController {
     const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne(query);
     if (!fileCheck) {
       res.status(404);
-      res.json('Not found');
+      res.json({ error: 'Not found' });
       return res;
     }
     const update = { $set: { isPublic: true } };
@@ -245,14 +245,14 @@ class FilesController {
     const { id } = req.params;
     if (!token) {
       res.status(401);
-      res.json('Unauthorized');
+      res.json({ error: 'Unauthorized' });
       return res;
     }
     const userID = await redisClient.get(`auth_${token}`);
     const user = await dbClient.client.db(dbClient.database).collection('users').findOne({ _id: ObjectID(userID) });
     if (!user) {
       res.status(401);
-      res.json('Unauthorized');
+      res.json({ error: 'Unauthorized' });
       return res;
     }
     const collection = await dbClient.client.db(dbClient.database).collection('files');
@@ -260,7 +260,7 @@ class FilesController {
     const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne(query);
     if (!fileCheck) {
       res.status(404);
-      res.json('Not found');
+      res.json({ error: 'Not found' });
       return res;
     }
     const update = { $set: { isPublic: false } };
