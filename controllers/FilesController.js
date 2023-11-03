@@ -297,7 +297,8 @@ class FilesController {
       return res;
     }
     if (file.isPublic === false) {
-      if (!user) {
+      const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id), userId: ObjectID(userID) });
+      if (!fileCheck) {
         res.status(404);
         res.json({ error: 'Not found' });
         return res;
