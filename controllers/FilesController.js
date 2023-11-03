@@ -215,7 +215,7 @@ class FilesController {
       res.json('Unauthorized');
       return res;
     }
-    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id), userId: ObjectID(userID) });
+    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
     if (!fileCheck) {
       res.status(404);
       res.json('Not found');
@@ -255,7 +255,7 @@ class FilesController {
       res.json('Unauthorized');
       return res;
     }
-    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id), userId: ObjectID(userID) });
+    const fileCheck = await dbClient.client.db(dbClient.database).collection('files').findOne({ _id: ObjectID(id) });
     if (!fileCheck) {
       res.status(404);
       res.json('Not found');
